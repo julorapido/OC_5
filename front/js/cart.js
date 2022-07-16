@@ -30,6 +30,9 @@ function AddItemsContent(){
         const quantity = CartSettingsQuantity.appendChild(document.createElement("p"));
         const input = CartSettingsQuantity.appendChild(document.createElement("input"));
         input.className = "itemQuantity";
+        input.onchange = function(){
+          UpdateCartQuantity(input);
+        };
         quantity.innerHTML = Object.values(item)[2];
 
         const CartSettingsDelete = AddHtmlElement(CartSettings,document.createElement("div"),"cart__item__content__settings__delete");
@@ -40,6 +43,24 @@ function AddItemsContent(){
         
     });
 }
+
+function UpdateCartQuantity(input){
+    const InputParent =  input.parentNode.parentNode.parentNode.parentNode;
+      var InputQuantity =  input.parentNode.children[0];
+  const updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
+    for (let i = 0; i < InputParent.parentNode.children.length; i++) {
+        if (InputParent.parentNode.children[i] == InputParent){
+              var ObjectToModify = updatedCartData[i];
+                ObjectToModify.quantity =  parseInt(ObjectToModify.quantity) + parseInt(input.value);
+                  InputQuantity.innerHTML = ObjectToModify.quantity;
+                  const jsonCartArray = JSON.stringify(updatedCartData);
+              sessionStorage.setItem('cartItems', jsonCartArray);
+        }
+    }
+}
+
+
+
 function UpdateCartPrice(){
   var updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
   var NewSum = 0;
@@ -58,16 +79,15 @@ function DeleteCartItem(buttonChildDiv){
   var updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
      for (let i = 0; i < ArticleParent.parentNode.children.length; i++) {
         if (ArticleParent.parentNode.children[i] == ArticleParent) {
-          updatedCartData.splice(i, 1);
-          console.log(updatedCartData);
-
-
-          const jsonCartArray = JSON.stringify(updatedCartData);
-          sessionStorage.setItem('cartItems', jsonCartArray);
+            updatedCartData.splice(i, 1);
+            const jsonCartArray = JSON.stringify(updatedCartData);
+            sessionStorage.setItem('cartItems', jsonCartArray);
         }
     }
     UpdateCartPrice();
     ArticleParent.remove();
 }
+
+
 AddItemsContent();
 UpdateCartPrice();
