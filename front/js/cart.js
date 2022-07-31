@@ -7,6 +7,8 @@ function AddHtmlElement(elementSelected, elementToAdd, classOfAddedElement){
   elementToAdd.className = classOfAddedElement;
   return elementToAdd
 }
+
+// FUNCTION D'AJOUT DES ELEMENTS DU PANIER EN HTML ///////////////////////////
 function AddItemsContent(){
     cartData.forEach(function(item){
         const CartArticle =  AddHtmlElement(document.getElementById("cart__items"),document.createElement("article"),"cart__item");
@@ -44,6 +46,8 @@ function AddItemsContent(){
     });
 }
 
+
+// FUNCTION POUR METTRE A JOUR LA QUANTITÉ D'UN OBJET DU PANIER ///////////////////////////
 function UpdateCartQuantity(input){
     const InputParent =  input.parentNode.parentNode.parentNode.parentNode;
       var InputQuantity =  input.parentNode.children[0];
@@ -55,12 +59,13 @@ function UpdateCartQuantity(input){
                   InputQuantity.innerHTML = ObjectToModify.quantity;
                   const jsonCartArray = JSON.stringify(updatedCartData);
               sessionStorage.setItem('cartItems', jsonCartArray);
+              UpdateCartPrice();
         }
     }
 }
 
 
-
+// FUNCTION POUR METTRE A JOUR LE PRIX DU PANIER ///////////////////////////
 function UpdateCartPrice(){
   var updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
   var NewSum = 0;
@@ -74,6 +79,7 @@ function UpdateCartPrice(){
 
 }
 
+// FUNCTION POUR SUPPRIMER UN ELEMENT DU PANIER ///////////////////////////
 function DeleteCartItem(buttonChildDiv){
   var ArticleParent =  buttonChildDiv.parentNode.parentNode.parentNode.parentNode;
   var updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
@@ -91,3 +97,51 @@ function DeleteCartItem(buttonChildDiv){
 
 AddItemsContent();
 UpdateCartPrice();
+
+
+///onClick function /////////////////////////
+var commanderBtn = document.getElementById("order");
+commanderBtn.addEventListener("click", function(event){
+  event.preventDefault();
+});
+commanderBtn.onclick = function() {
+    var updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
+    VerifyInput(updatedCartData);
+}
+
+
+
+////// FUNCTION POUR VERIFIER LE FORMULAIRE DE COMMANDE  //////////////////////////
+function VerifyInput(command){
+  var letters = /^[A-Za-z\s]+$/;
+  var lettersAndNumbers = /^[A-Za-z0-9\s]*$/;
+  var validatorCount = 0;
+  var allForms = document.getElementsByClassName("cart__order__form__question");
+    if (command != null){
+      for(var i = 0; i < allForms.length; i++){
+          var inputElement = allForms[i].querySelector("input");
+          if (inputElement.id == "firstName" || inputElement.id == "lastName" || inputElement.id == "city" ){
+              if(inputElement.value.match(letters)){
+                validatorCount += 1;
+              }else{
+                alert('Remplissez correctement le champ ' +  (inputElement.id).toString());
+            }
+          }
+          if (inputElement.id == "address"){
+              if(inputElement.value.toUpperCase().match(lettersAndNumbers)){
+                  validatorCount += 1;
+                }else {
+                  alert(" Remplissez correctement le champ  d'adresse ");
+                }
+          }
+          if (inputElement.id == "email"){
+            if(inputElement.value.toUpperCase().match(lettersAndNumbers)){
+              
+              }else {
+                alert(" Remplissez correctement l'email ");
+              }
+        }
+          
+      }
+    }
+}
