@@ -2,18 +2,21 @@ const e = window.location.href.toString();
 const last =  e.substring(e.length - 32);
 var ItemObject = {}
 var ProductRequest = new Request("http://localhost:3000/api/products/" + last);
+
+//////////////////////// FUNCTION POUR FETCH UN PRODUIT SPÉICIFIQUE DE L'API //////////////////////////////
 function fetchSpecificProduct(){
     fetch(ProductRequest).then(res => res.json())
     .then(data => {
         ProductToHtml(data);
+        /// APPEL DE LA FONCTION DU RENDU HTML ///
         ItemObject = data;
     }) .catch(error => {
         console.log(error);
     })  
 }
-
 fetchSpecificProduct();
 
+//////////////////// FUNCTION POUR RENDRE LE PRODUIT DE L'API EN HTML /////////////////////////////////
 function ProductToHtml(ItemObj){
     var itemIMG = document.getElementsByClassName("item__img");
     var item = itemIMG.item(0);
@@ -36,6 +39,11 @@ function ProductToHtml(ItemObj){
         selectNew.innerHTML = value;
     })
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////// FUNCTION DE VÉRIFICATION DE DOUBLON /////////////////////////////////
 var dblIndx = 0;
 var DoublonPresent = false;
 function VerifyNoDuplicate(ObjectToVerify){
@@ -43,10 +51,8 @@ function VerifyNoDuplicate(ObjectToVerify){
         dblIndx = 0;
         var InitialArray =  JSON.parse(sessionStorage.getItem("cartItems"));
             ( InitialArray).forEach(function(item){
-        
-
+    
                 if ((Object.values(item)[0] == Object.values(ObjectToVerify)[0]) && (Object.values(item)[1] == Object.values(ObjectToVerify)[1])){
-                            console.log("doublon trouv" + dblIndx.toString() +" tours de boucles ")
                             DoublonPresent = true;
                             return
                 }
@@ -56,15 +62,21 @@ function VerifyNoDuplicate(ObjectToVerify){
         })
     
 }
+//////////////////////////////////////////////////////////////////////////////////////////////
 
+
+//////////////////// FUNCTION POUR PUSH UN PRODUIT DANS LE SESSIONSTORAGE /////////////////////////////////
 function PushProduct(Array, Product){
     Array.push(Product);
     const jsonCartArray = JSON.stringify(Array);
     sessionStorage.setItem('cartItems', jsonCartArray);
 }
-var CartArray = [];  
-if(document.getElementById('addToCart').onclick = 
+//////////////////// ///////////////////////////////// /////////////////////////////////
 
+
+var CartArray = [];
+if(document.getElementById('addToCart').onclick = 
+    //////////////////// FUNCTION POUR VERIFIER UN PRODUOT ET L'AJOUTER AU PANIER /////////////////////////////////
     function AddToCart() {
         var quantity = document.getElementById("quantity");
         var colorsOptionsInxed = document.getElementById("colors").selectedIndex;
@@ -73,13 +85,14 @@ if(document.getElementById('addToCart').onclick =
                     if ( ( JSON.parse(sessionStorage.getItem("cartItems"))) != null){
                         CartArray =  JSON.parse(sessionStorage.getItem("cartItems"));
                     }
-                    // CREATION DE L'OBJECT PRODUCT ------------------------------------------------------------------
+                    // CREATION DE L'OBJECT PRODUCT -------------
                     var Product = {
                         name : 'Kanap Helicé',
                         color : 'blue',
                         quantity : 1,
                         img_url : "e",
-                        price: 400
+                        price: 400,
+                        id : ""
                     };
                     Product.quantity = document.querySelector('input').value;
                     var selectColors = document.getElementById('colors');
@@ -88,14 +101,15 @@ if(document.getElementById('addToCart').onclick =
                     Product.name = Object.values(ItemObject)[2];
                     Product.price = Object.values(ItemObject)[3];
                     Product.img_url = Object.values(ItemObject)[4];
-                    //  ------------------------------------------------------------------
+                    Product.id = Object.values(ItemObject)[1];
+                    // ------------------------------------------------------------------
 
                     if ( ( JSON.parse(sessionStorage.getItem("cartItems"))) == null){
-                        // AJOUT DE L'OBJECT PRODUCT ------------------------------------------------------------------
+                        // AJOUT DE L'OBJECT PRODUCT DIRECTEMENT (si le panier était déjà vide)---------------------------------
                         PushProduct(CartArray, Product);
                     }else if ( ( JSON.parse(sessionStorage.getItem("cartItems"))) != null){
+                        // SINON ON VÉRIFIE LE DOUBLON ---------------------------------
                                 VerifyNoDuplicate(Product);
-                                console.log(DoublonPresent);
                                 if (DoublonPresent == true){
                                     CartArray =  JSON.parse(sessionStorage.getItem("cartItems"));
                                     var ObjectToModify = CartArray[dblIndx];
@@ -106,6 +120,7 @@ if(document.getElementById('addToCart').onclick =
                                     sessionStorage.setItem('cartItems', jsonCartArray);
                                 }else if (DoublonPresent == false){
                                          PushProduct(CartArray, Product);
+                                         //// APPEL DE LA FONCTION PushProduct() /////
                                 }  
                     }   
                 }else {
@@ -115,6 +130,7 @@ if(document.getElementById('addToCart').onclick =
             alert("La quantité doit être entre 1 et 100");
         }
     });
+/////////////////////////////////////////////////// /////////////////////////////////
 
 
 

@@ -1,7 +1,7 @@
 var AllProductsRequest = new Request("http://localhost:3000/api/products/");
 var ProductsObj = {};
 
-
+/////////////////////////// FONCTION POUR FETCH L'API///////////////////////////////////
 function FetchProducts(){
     fetch(AllProductsRequest)
     .then(res => res.json())
@@ -9,12 +9,14 @@ function FetchProducts(){
         console.log(data);
         ProductsObj = data;
         console.log(ProductsObj);
+        //// APPEL DE LA FONCTION TREATPRODUCTS() ////
         TreatProducts(data);
     })
     .catch(error => {
         console.log(error);
     });
 }
+//////////////////////// FONCTION RENDU DES OBJETS DE L'API EN HTML //////////////////////////////////////////////////////
 function TreatProducts(Product_Object){
     Object.entries(Product_Object).forEach(([key, value]) => {
         var img = document.createElement("img");
@@ -35,7 +37,7 @@ function TreatProducts(Product_Object){
         h3.innerHTML = Object.values(value)[2];
      });   
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////
 FetchProducts();
 
 

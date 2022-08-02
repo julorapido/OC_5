@@ -45,6 +45,9 @@ function AddItemsContent(){
         
     });
 }
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 // FUNCTION POUR METTRE A JOUR LA QUANTITÉ D'UN OBJET DU PANIER ///////////////////////////
@@ -63,6 +66,7 @@ function UpdateCartQuantity(input){
         }
     }
 }
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // FUNCTION POUR METTRE A JOUR LE PRIX DU PANIER ///////////////////////////
@@ -76,8 +80,11 @@ function UpdateCartPrice(){
   }) 
   document.getElementById("totalQuantity").innerHTML = NewSum;
   document.getElementById("totalPrice").innerHTML = PriceUpdated;
-
 }
+////////////////////////////////////////////////////////////////////////////
+
+
+
 
 // FUNCTION POUR SUPPRIMER UN ELEMENT DU PANIER ///////////////////////////
 function DeleteCartItem(buttonChildDiv){
@@ -93,10 +100,12 @@ function DeleteCartItem(buttonChildDiv){
     UpdateCartPrice();
     ArticleParent.remove();
 }
-
+////////////////////////////////////////////////////////////////////////////
 
 AddItemsContent();
 UpdateCartPrice();
+
+
 
 
 ///onClick function /////////////////////////
@@ -108,40 +117,107 @@ commanderBtn.onclick = function() {
     var updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
     VerifyInput(updatedCartData);
 }
+///////////////////////////////////////////////
 
+
+//////////////// FUNCTION POUR ENVOYER MESSAGE D'ERREUR /////////////////////
+function ThrowErrMessage(errBool,formId , messageString){
+
+    var formHtml = document.getElementById(formId);
+    if (errBool == true){
+      formHtml.innerHTML = messageString;
+    }else {
+      formHtml.innerHTML = "";
+    }
+}
+//////////////////////////////////////////////////////////////////////////////
 
 
 ////// FUNCTION POUR VERIFIER LE FORMULAIRE DE COMMANDE  //////////////////////////
 function VerifyInput(command){
   var letters = /^[A-Za-z\s]+$/;
   var lettersAndNumbers = /^[A-Za-z0-9\s]*$/;
+  var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   var validatorCount = 0;
   var allForms = document.getElementsByClassName("cart__order__form__question");
     if (command != null){
+
       for(var i = 0; i < allForms.length; i++){
           var inputElement = allForms[i].querySelector("input");
+          var StringId = inputElement.id.toString() + "ErrorMsg";
+
+          /////////// NORMALISATION DU STRING (POUR INCLURE LES ACCENTS ET LES CARACTÈRES SPÉCIAUX)//////////
+          var originalString = inputElement.value.toString();
+          var normalizedString = originalString.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+          //////////////////////////////////////////////////////////////////////////////
+
           if (inputElement.id == "firstName" || inputElement.id == "lastName" || inputElement.id == "city" ){
-              if(inputElement.value.match(letters)){
-                validatorCount += 1;
-              }else{
-                alert('Remplissez correctement le champ ' +  (inputElement.id).toString());
+            var ErrorStringMsg = "";
+            if (inputElement.id.includes("first")){
+              ErrorStringMsg = "Prénom"
+            }else if (inputElement.id.includes("last")){
+              ErrorStringMsg = "Nom de famille"
+            }else if (inputElement.id.includes("city")){
+              ErrorStringMsg = "Ville"
             }
-          }
-          if (inputElement.id == "address"){
-              if(inputElement.value.toUpperCase().match(lettersAndNumbers)){
-                  validatorCount += 1;
-                }else {
-                  alert(" Remplissez correctement le champ  d'adresse ");
+
+          if(normalizedString.match(letters)){
+                        validatorCount += 1;
+                        ThrowErrMessage(false,StringId,"");
+                  }else{
+                        ThrowErrMessage(true,StringId,"Remplissez correctement le champ " + ErrorStringMsg);
                 }
           }
+          if (inputElement.id == "address"){
+
+            if(normalizedString.match(lettersAndNumbers)){
+                      validatorCount += 1;
+                      ThrowErrMessage(false,StringId,"");
+                    }else {
+                      ThrowErrMessage(true,StringId,"Remplissez correctement le champ d'Adresse !");
+                    }
+          }
           if (inputElement.id == "email"){
-            if(inputElement.value.toUpperCase().match(lettersAndNumbers)){
-              
-              }else {
-                alert(" Remplissez correctement l'email ");
-              }
-        }
-          
+                if(normalizedString.match(mailformat)){
+                    validatorCount += 1;
+                    ThrowErrMessage(false,StringId,"");
+                  }else {
+                    ThrowErrMessage(true,StringId,"Remplissez correctement le champ d'Adresse-mail !");
+                  }
+          }
+        
+          // SI LE FORMUMAIRE EST VALIDE (POST DU FORMULAIRE) et REDIRECTION VERS PAGE CONFIRMATION //
+          if (validatorCount == 5){
+                const contact = {
+                    firstName : "string",
+                    lastName: "string",
+                    address: "string",
+                    city: "string",
+                    email: "string"
+                }
+                const products = [];
+        
+                var values = [];
+                for(var i = 0; i < allForms.length; i++){
+                      var inputElement = allForms[i].querySelector("input");
+                      var inputStringValue = inputElement.value.toString();
+                      values.push(inputStringValue);
+                }
+                var i = 0;
+                Object.keys(contact).forEach(key => {
+                    contact[key] = values[i];
+                    i += 1;
+                })
+
+              cartData.forEach(function(item){
+                products.push(Object.values(item)[5]);
+              })
+
+              console.log(contact);
+              console.log(products);
+          }
+          ///////////////////////////////////////////////////////////////////////////
       }
     }
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
