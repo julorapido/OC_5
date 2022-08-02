@@ -141,6 +141,6 @@ if(document.getElementById('addToCart').onclick =
 //    name : "ABC",
 //    color : 18,
 //    quantity : "CSE",
-//    score : 90
+//    id : 123320eE03eroA40O4450O
 //};
 //

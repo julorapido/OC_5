@@ -1,7 +1,6 @@
 var cartData = JSON.parse(sessionStorage.getItem("cartItems"));
 console.log(cartData);  
 
-
 function AddHtmlElement(elementSelected, elementToAdd, classOfAddedElement){
   elementSelected.appendChild(elementToAdd);
   elementToAdd.className = classOfAddedElement;
@@ -115,7 +114,7 @@ commanderBtn.addEventListener("click", function(event){
 });
 commanderBtn.onclick = function() {
     var updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
-    VerifyInput(updatedCartData);
+    VerifyForm(updatedCartData);
 }
 ///////////////////////////////////////////////
 
@@ -134,7 +133,7 @@ function ThrowErrMessage(errBool,formId , messageString){
 
 
 ////// FUNCTION POUR VERIFIER LE FORMULAIRE DE COMMANDE  //////////////////////////
-function VerifyInput(command){
+function VerifyForm(command){
   var letters = /^[A-Za-z\s]+$/;
   var lettersAndNumbers = /^[A-Za-z0-9\s]*$/;
   var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -186,8 +185,12 @@ function VerifyInput(command){
                   }
           }
         
-          // SI LE FORMUMAIRE EST VALIDE (POST DU FORMULAIRE) et REDIRECTION VERS PAGE CONFIRMATION //
+          // SI LE FORMUMAIRE EST VALIDE APPEL DE LA FONCTION POST ET REDIRECT//
           if (validatorCount == 5){
+                let data = {
+                  contact : {},
+                  products : []
+                };
                 const contact = {
                     firstName : "string",
                     lastName: "string",
@@ -196,7 +199,7 @@ function VerifyInput(command){
                     email: "string"
                 }
                 const products = [];
-        
+      
                 var values = [];
                 for(var i = 0; i < allForms.length; i++){
                       var inputElement = allForms[i].querySelector("input");
@@ -208,16 +211,30 @@ function VerifyInput(command){
                     contact[key] = values[i];
                     i += 1;
                 })
-
               cartData.forEach(function(item){
                 products.push(Object.values(item)[5]);
               })
-
-              console.log(contact);
-              console.log(products);
+              data.contact = contact;
+              data.products = products;
+              PostFormAndRedirectUser(data);
           }
           ///////////////////////////////////////////////////////////////////////////
       }
     }
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////// FUNCTION POUR ENVOYER (POST) LE FORMULAIRE À L'API ET REDIRIGER L'UTILISATEUR //////////////////////////
+async function PostFormAndRedirectUser(data){
+  var PostRequest = new Request("http://localhost:3000/api/products/order");
+    let response = await fetch(PostRequest, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    });
+    let result = await response.json();
+      console.log(result);
+
+      let redirectAdress = "http://127.0.0.1:5500/Projet5/front/html/confirmation.html?orderId="
+      window.location.replace(redirectAdress + result.orderId.toString());
+}
