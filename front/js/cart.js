@@ -52,9 +52,12 @@ function AddItemsContent(){
 // FUNCTION POUR METTRE A JOUR LA QUANTITÉ D'UN OBJET DU PANIER ///////////////////////////
 function UpdateCartQuantity(input){
     const InputParent =  input.parentNode.parentNode.parentNode.parentNode;
-      var InputQuantity =  input.parentNode.children[0];
-  const updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
-    for (let i = 0; i < InputParent.parentNode.children.length; i++) {
+    var InputQuantity =  input.parentNode.children[0];
+    const updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
+    if (input.value == 0 ){
+      alert('Modifier au dessus de 0');
+    }else{
+      for (let i = 0; i < InputParent.parentNode.children.length; i++) {
         if (InputParent.parentNode.children[i] == InputParent){
               var ObjectToModify = updatedCartData[i];
                 ObjectToModify.quantity =  parseInt(ObjectToModify.quantity) + parseInt(input.value);
@@ -64,6 +67,8 @@ function UpdateCartQuantity(input){
               UpdateCartPrice();
         }
     }
+  }
+
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
 
