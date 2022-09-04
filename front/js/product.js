@@ -9,6 +9,7 @@ function fetchSpecificProduct(){
     .then(data => {
         ProductToHtml(data);
         /// APPEL DE LA FONCTION DU RENDU HTML ///
+        console.log(data);
         ItemObject = data;
     }) .catch(error => {
         console.log(error);

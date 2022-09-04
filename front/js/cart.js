@@ -1,5 +1,5 @@
 var cartData = JSON.parse(sessionStorage.getItem("cartItems"));
-console.log(cartData);  
+//console.log(cartData);  
 
 function AddHtmlElement(elementSelected, elementToAdd, classOfAddedElement){
   elementSelected.appendChild(elementToAdd);
@@ -55,7 +55,7 @@ function UpdateCartQuantity(input){
     var InputQuantity =  input.parentNode.children[0];
     const updatedCartData = JSON.parse(sessionStorage.getItem("cartItems"));
     if (input.value == 0 ){
-      alert('Modifier au dessus de 0');
+      alert('Veuillez saisir une valeur supérieure à 0 ou cliquer sur supprimer pour enlever larticle de votre panier');
     }else{
       for (let i = 0; i < InputParent.parentNode.children.length; i++) {
         if (InputParent.parentNode.children[i] == InputParent){
@@ -144,7 +144,7 @@ function VerifyForm(command){
   var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   var validatorCount = 0;
   var allForms = document.getElementsByClassName("cart__order__form__question");
-    if (command != null){
+    if (command.length != 0){
 
       for(var i = 0; i < allForms.length; i++){
           var inputElement = allForms[i].querySelector("input");
@@ -225,6 +225,8 @@ function VerifyForm(command){
           }
           ///////////////////////////////////////////////////////////////////////////
       }
+    }else { ////////////////////////// SI LE PANIER EST VIDE  => ALERTE /////////////////////////////////////////////////
+      alert('Veuillez dabord ajouter au moins un article au panier');
     }
 }
 ////// FUNCTION POUR ENVOYER (POST) LE FORMULAIRE À L'API ET REDIRIGER L'UTILISATEUR //////////////////////////
