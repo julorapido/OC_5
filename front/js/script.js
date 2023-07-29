@@ -32,7 +32,7 @@ function TreatProducts(Product_Object){
             article.appendChild(h3);    
             article.appendChild(p);
         a.href = "http://127.0.0.1:5500/Projet5/front/html/product.html?id=" + Object.values(value)[1].toString();
-        img.src = Object.values(value)[4]
+        img.src = Object.values(value)[4];
         p.innerHTML = Object.values(value)[5];
         h3.innerHTML = Object.values(value)[2];
      });   

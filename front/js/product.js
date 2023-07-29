@@ -77,7 +77,7 @@ function PushProduct(Array, Product){
 
 var CartArray = [];
 if(document.getElementById('addToCart').onclick = 
-    //////////////////// FUNCTION POUR VERIFIER UN PRODUOT ET L'AJOUTER AU PANIER /////////////////////////////////
+    //////////////////// FUNCTION POUR VERIFIER UN PRODUIT ET L'AJOUTER AU PANIER /////////////////////////////////
     function AddToCart() {
         var quantity = document.getElementById("quantity");
         var colorsOptionsInxed = document.getElementById("colors").selectedIndex;
@@ -114,12 +114,13 @@ if(document.getElementById('addToCart').onclick =
                                 if (DoublonPresent == true){
                                     CartArray =  JSON.parse(sessionStorage.getItem("cartItems"));
                                     var ObjectToModify = CartArray[dblIndx];
-                                    alert("Ajout de "+  Product.quantity.toString() +" élements du panier");
-                                    ObjectToModify.quantity =  parseInt(ObjectToModify.quantity) + parseInt(Product.quantity);
+                                    alert("Mise à jour de "+  Product.quantity.toString() +" élements du panier");
+                                    ObjectToModify.quantity = parseInt(ObjectToModify.quantity) + parseInt(Product.quantity);
                                     CartArray[dblIndx] = ObjectToModify;
                                     const jsonCartArray = JSON.stringify(CartArray);
                                     sessionStorage.setItem('cartItems', jsonCartArray);
                                 }else if (DoublonPresent == false){
+                                        alert("Ajout de "+  Product.quantity.toString() +" élements du panier");
                                          PushProduct(CartArray, Product);
                                          //// APPEL DE LA FONCTION PushProduct() /////
                                 }  
